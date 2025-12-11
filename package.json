@@ -1,26 +1,20 @@
 {
   "name": "english-test-platform",
   "version": "1.0.0",
-  "description": "Interactive English test platform with anti-cheating protection",
+  "description": "English grammar test platform with Telegram reporting",
   "main": "index.html",
   "scripts": {
-    "start": "serve .",
-    "build": "echo 'No build required for static site'"
-  },
-  "dependencies": {
-    "serve": "^14.0.0"
-  },
-  "devDependencies": {},
-  "engines": {
-    "node": ">=14.0.0"
+    "dev": "npx serve .",
+    "start": "npx serve ."
   },
   "keywords": [
-    "education",
     "english",
     "test",
-    "quiz",
-    "learning"
+    "grammar",
+    "telegram",
+    "vercel"
   ],
-  "author": "English Test Platform",
-  "license": "MIT"
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
 }
