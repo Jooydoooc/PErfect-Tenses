@@ -1,14 +1,25 @@
-// This is a serverless function for Vercel to send results to Telegram
-// You need to set environment variables in Vercel:
-// TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID
+// api/send-telegram.js
 
 module.exports = async (req, res) => {
-  // Only allow POST requests
+  // Allow only POST requests
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed. Use POST.' });
+    return;
+  }
+
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!token || !chatId) {
+    res.status(500).json({
+      error:
+        'Telegram configuration missing. Please set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in Vercel environment variables.'
+    });
+    return;
   }
 
   try {
+    // Vercel parses JSON body automatically when sent as application/json
     const {
       student,
       group,
@@ -17,54 +28,63 @@ module.exports = async (req, res) => {
       percentage,
       test,
       timestamp
-    } = req.body;
+    } = req.body || {};
 
-    // Get Telegram credentials from environment variables
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-
-    if (!botToken || !chatId) {
-      console.error('Telegram credentials not configured');
-      return res.status(500).json({ error: 'Server configuration error' });
+    if (!student || !group || score === undefined || !total) {
+      res.status(400).json({
+        error: 'Missing required fields in request body.'
+      });
+      return;
     }
 
-    // Format message
-    const message = `
-📊 *New Test Result*
-
-👤 *Student:* ${student}
-🏫 *Group:* ${group}
-📝 *Test:* ${test}
-🎯 *Score:* ${score}/${total} (${percentage}%)
-📅 *Date:* ${new Date(timestamp).toLocaleString()}
-
-✅ *Congratulations!*
-    `.trim();
-
-    // Send to Telegram
-    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'Markdown'
-      })
+    const submittedAt = new Date(
+      timestamp || Date.now()
+    ).toLocaleString('en-GB', {
+      timeZone: 'Asia/Tashkent'
     });
 
-    const data = await response.json();
+    const text = `
+<b>English Test Result</b>
 
-    if (!data.ok) {
+👤 <b>Student:</b> ${student}
+👥 <b>Group:</b> ${group}
+📚 <b>Test:</b> ${test || 'Perfect Tenses'}
+
+✅ <b>Score:</b> ${score}/${total} (${percentage}%)
+🕒 <b>Submitted:</b> ${submittedAt}
+`;
+
+    const telegramResponse = await fetch(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text,
+          parse_mode: 'HTML'
+        })
+      }
+    );
+
+    const data = await telegramResponse.json();
+
+    if (!telegramResponse.ok || !data.ok) {
       console.error('Telegram API error:', data);
-      return res.status(500).json({ error: 'Failed to send message to Telegram' });
+      res.status(500).json({
+        error: 'Failed to send message to Telegram',
+        details: data
+      });
+      return;
     }
 
-    return res.status(200).json({ success: true, message: 'Results sent to Telegram' });
-    
+    res.status(200).json({ ok: true, telegram: data });
   } catch (error) {
-    console.error('Error sending to Telegram:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('send-telegram error:', error);
+    res.status(500).json({
+      error: 'Internal server error while sending Telegram message.'
+    });
   }
 };
