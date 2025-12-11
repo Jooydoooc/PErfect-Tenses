@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Test Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .other-group-input {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Main Menu */
+        .main-container {
+            display: none;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .results-btn {
+            background: var(--success);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .results-btn:hover {
+            background: #2da8d8;
+            transform: translateY(-2px);
+        }
+
+        .tests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .test-card.available:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .test-card.coming-soon {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .test-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .test-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .test-desc {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background: rgba(76, 201, 240, 0.2);
+            color: var(--success);
+        }
+
+        .status-coming {
+            background: rgba(248, 150, 30, 0.2);
+            color: var(--warning);
+        }
+
+        .test-time {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(67, 97, 238, 0.1);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        /* Test Page */
+        .test-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .test-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--danger);
+            background: rgba(247, 37, 133, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .rules-warning {
+            background: rgba(248, 150, 30, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .rules-warning h3 {
+            color: var(--warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rules-warning ul {
+            padding-left: 20px;
+            color: var(--dark);
+        }
+
+        .rules-warning li {
+            margin-bottom: 5px;
+        }
+
+        .question-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.5s ease;
+        }
+
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .prev-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .prev-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .next-btn:hover {
+            background: var(--secondary);
+        }
+
+        .submit-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #2da8d8;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 4%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        /* Results Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .results-summary {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) 0% 80%, #e0e0e0 80% 100%);
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-inner {
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-percentage {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .score-text {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .results-table th {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .correct-answer {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .incorrect-answer {
+            color: var(--danger);
+        }
+
+        .cheat-warning {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1001;
+            animation: shake 0.5s ease;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .login-card {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .tests-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>English Test Platform</h1>
+                <p>Test your knowledge and improve your skills</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" required placeholder="Enter your first name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" required placeholder="Enter your last name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="group">Select Group</label>
+                    <select id="group" required>
+                        <option value="">Select your group</option>
+                        <option value="Elementary 9:30">Elementary 9:30</option>
+                        <option value="Brain Hackers">Brain Hackers</option>
+                        <option value="other">Other Group</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="otherGroupContainer" style="display: none;">
+                    <label for="otherGroup">Specify Your Group</label>
+                    <input type="text" id="otherGroup" placeholder="Enter your group name">
+                </div>
+                
+                <button type="submit" class="btn pulse">
+                    <i class="fas fa-sign-in-alt"></i> Start Learning
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div class="container main-container" id="mainMenu">
+        <div class="header">
+            <div>
+                <h1>Available Tests</h1>
+                <p id="welcomeMessage">Welcome back!</p>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">JD</div>
+                <a href="#" class="results-btn" id="viewResultsBtn">
+                    <i class="fas fa-chart-bar"></i> View Results
+                </a>
+            </div>
+        </div>
+        
+        <div class="tests-grid">
+            <!-- Test 1 -->
+            <div class="test-card available" id="test1" onclick="startTest(1)">
+                <div class="test-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="test-time">30 min</div>
+                <h3 class="test-title">Perfect Tenses</h3>
+                <p class="test-desc">Test your knowledge of Present Perfect, Past Perfect, and Future Perfect tenses.</p>
+                <span class="test-status status-available">Available</span>
+            </div>
+            
+            <!-- Coming Soon Tests -->
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3 class="test-title">Test 2: Conditionals</h3>
+                <p class="test-desc">Coming soon - Mastering all types of conditional sentences.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <!-- Add 8 more coming soon tests -->
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="test-title">Test 3: Reported Speech</h3>
+                <p class="test-desc">Coming soon - Learn how to report what others said.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <h3 class="test-title">Test 4: Passive Voice</h3>
+                <p class="test-desc">Coming soon - Understanding and using passive voice correctly.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-puzzle-piece"></i>
+                </div>
+                <h3 class="test-title">Test 5: Phrasal Verbs</h3>
+                <p class="test-desc">Coming soon - Mastering common phrasal verbs.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3 class="test-title">Test 6: Modal Verbs</h3>
+                <p class="test-desc">Coming soon - Using modal verbs correctly in context.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="test-title">Test 7: Gerunds & Infinitives</h3>
+                <p class="test-desc">Coming soon - When to use gerunds and infinitives.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h3 class="test-title">Test 8: Comparatives</h3>
+                <p class="test-desc">Coming soon - Making comparisons correctly.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3 class="test-title">Test 9: Articles</h3>
+                <p class="test-desc">Coming soon - Mastering the use of articles in English.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+            
+            <div class="test-card coming-soon">
+                <div class="test-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="test-title">Test 10: Prepositions</h3>
+                <p class="test-desc">Coming soon - Using prepositions correctly in sentences.</p>
+                <span class="test-status status-coming">Coming Soon</span>
+            </div>
+        </div>
+        
+        <div class="rules-warning">
+            <h3><i class="fas fa-exclamation-triangle"></i> Important Rules</h3>
+            <ul>
+                <li>Do not switch tabs or windows during the test</li>
+                <li>Do not use any external help (books, websites, etc.)</li>
+                <li>Complete the test within the given time limit</li>
+                <li>Two warnings will result in automatic test restart</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Test Page -->
+    <div class="container test-container" id="testPage">
+        <div class="test-header">
+            <div>
+                <h2>Perfect Tenses Test</h2>
+                <p id="studentInfo">Student: John Doe | Group: Elementary 9:30</p>
+            </div>
+            <div class="timer" id="timer">30:00</div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="rules-warning">
+            <h3><i class="fas fa-exclamation-circle"></i> Warning: Anti-Cheating System Active</h3>
+            <p>This test is protected by an anti-cheating system. Any attempt to switch tabs or leave the page will result in a warning. After two warnings, the test will restart automatically.</p>
+        </div>
+        
+        <div id="questionsContainer">
+            <!-- Questions will be inserted here -->
+        </div>
+        
+        <div class="navigation-buttons">
+            <button class="nav-btn prev-btn" id="prevBtn" onclick="changeQuestion(-1)">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button class="nav-btn next-btn" id="nextBtn" onclick="changeQuestion(1)">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal-overlay" id="resultsModal">
+        <div class="modal-content">
+            <h2><i class="fas fa-chart-bar"></i> Test Results</h2>
+            <div class="results-summary">
+                <div class="score-circle">
+                    <div class="score-inner">
+                        <div class="score-percentage" id="scorePercentage">80%</div>
+                        <div class="score-text">Score</div>
+                    </div>
+                </div>
+                <h3 id="finalScore">20/25 Correct Answers</h3>
+                <p id="studentResultInfo">John Doe | Elementary 9:30</p>
+            </div>
+            
+            <div id="groupResults" style="display: none;">
+                <h3><i class="fas fa-users"></i> Group Results</h3>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="groupResultsBody">
+                        <!-- Group results will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3><i class="fas fa-list-check"></i> Your Answers</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Your Answer</th>
+                        <th>Correct Answer</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <!-- Results will be inserted here -->
+                </tbody>
+            </table>
+            
+            <button class="btn" onclick="closeResults()" style="margin-top: 20px;">
+                <i class="fas fa-check"></i> Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Cheat Warning -->
+    <div class="cheat-warning" id="cheatWarning">
+        <i class="fas fa-exclamation-triangle"></i> Warning! Do not leave this page!
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
